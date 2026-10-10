@@ -14,22 +14,25 @@ jobs:
       - name: Unzip source package
         run: unzip SpeedTestAndroid-TermuxCore.zip
 
-      - name: List dir
-        run: ls -la
+      - name: 打印全部文件和文件夹
+        run: |
+          ls -la
+          echo "===== 进入文件夹查看 ====="
+          ls -la */
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'
-
+          
       - name: Build Debug APK
         run: |
-          cd SpeedTestAndroid-TermuxCore/SpeedTestAndroid
+          # 自动找到 SpeedTestAndroid 目录
+          cd $(find . -type d -name "SpeedTestAndroid" | head -1)
           gradle assembleDebug
 
       - name: Upload compiled APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
-          path: SpeedTestAndroid-TermuxCore/SpeedTestAndroid/app/build/outputs/apk/debug/app-debug.apk
+          path: **/app/build/outputs/apk/debug/app-debug.apk
